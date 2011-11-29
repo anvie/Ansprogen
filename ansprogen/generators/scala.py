@@ -37,7 +37,7 @@ Parameters:
 
 	kind -- Project kind, currently support `exe` and `lib`.
 			`exe` for create executable jar target.
-			`lib` for create jar library.
+			`lib` for create java library.
 	target_name -- Target output name.
 	sources -- scala sources, separated by whitespace.
 	main_class -- if project kind == `exe` then specify this one
@@ -63,7 +63,7 @@ Examples:
 		
 		self.kind = kind
 		self.target_name = target_name
-		self.main_class = main_class
+		self.main_class = main_class.title()
 		self.package = package
 		
 		if isinstance(sources, (str, unicode)):
@@ -166,17 +166,23 @@ Examples:
 </project>
 		'''.strip() + "\n")
 		
+		package = ""
+		if self.package:
+			package = "package " + self.package
+		
 		self._template_main = Template('''
-object Hello {
+%(package)s
+
+object $main_class {
 
 	def main(args: Array[String]): Unit = {
 
-		println("Yo world!")
+		println("Yo World!")
 	
 	}
 
 }
-''')
+''' % dict(package = package))
 
 	
 	def generate(self):
@@ -243,7 +249,9 @@ object Hello {
 		main_file = os.path.join(*paths)
 		
 		f = open(main_file, "w")
-		f.write(self._template_main.substitute())
+		f.write(self._template_main.substitute(
+			main_class = self.main_class
+		))
 		f.close()
 
 	def rollback(self):
