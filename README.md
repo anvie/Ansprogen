@@ -56,7 +56,7 @@ More specific:
 
 	$ progen -p Golang -o /tmp/hello kind=cmd target_name=hello sources=hello.go
 
-Or use interactive:
+Or use interactive mode:
 
 	$ progen -p Golang -i
 	Creating Golang project

@@ -17,7 +17,7 @@ except:
 
 setup(
     name = "ansprogen",
-    version = "0.0.1",
+    version = "0.0.2",
     author = "Robin Syihab",
     author_email = "anvie_2194@yahoo.com",
     description = (desc),
