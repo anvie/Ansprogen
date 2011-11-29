@@ -75,14 +75,10 @@ Examples:
 	<property name="project.dir" value="." />
 	<property name="main.class" value="$main_class_with_package" />
 	<property name="scala.home" value="$scala_home" />
+	<property name="build.dir" value="$${project.dir}/build" />
+	<property name="source.dir" value="$${project.dir}/src" />
 	
-	<!-- ================================= 
-          target: init              
-         ================================= -->
     <target name="init">
-    	
-        <property name="build.dir" value="$${project.dir}/build"/>
-    	<property name="source.dir" value="$${project.dir}/src" />
     	
     	<!-- scala libraries for classpath definitions -->
     	<property name="scala-library.jar" value="$${scala.home}/lib/scala-library.jar" />
@@ -113,9 +109,6 @@ Examples:
 
     </target>
 
-	<!-- ================================= 
-          target: build              
-         ================================= -->
     <target name="build" depends="init" description="Build class">
         <mkdir dir="$${build.dir}/classes" />
     	<scalac classpathref="build.classpath" deprecation="on"
@@ -129,9 +122,10 @@ Examples:
 	
 	  <!-- delete compiled files -->
 	  <target description="clean" name="clean">
-	    <delete dir="$${build.dir}" />
+		<delete includeemptydirs="true">
+	  		<fileset dir="$${build.dir}" />
+	  	</delete>
 	    <delete dir="$${project.dir}/doc" />
-	    <delete file="$${project.dir}/lib/scala-library.jar" />
 	  </target>
 	
 	  <!-- run program -->

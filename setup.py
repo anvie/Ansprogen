@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-desc = "A project generator tools for easily create project skeleton."
+desc = "A project generator tools for easy create project skeleton."
 
 try:
 	long_description = read('ansprogen/README.md')

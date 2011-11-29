@@ -26,6 +26,7 @@ import sys
 
 from generators import *
 
+VERSION = "0.0.2"
 
 _generators = [
 	golang.GolangGenerator,
@@ -54,6 +55,9 @@ execute `help` followed by project name, example:
 '''
 
 def main():
+	
+	print "Ansprogen " + VERSION
+	
 	opts, args = parser.parse_args()
 	
 	if len(args) == 2:
