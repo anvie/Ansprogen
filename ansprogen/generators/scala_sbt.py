@@ -45,12 +45,6 @@ class ScalaGenerator(IGenerator):
 			'default': '0.0.1'
 		},
 		{
-			'name': 'sources',
-			'desc': 'Scala sources, separated by whitespace.',
-			'data_type': 'list',
-			'default': ['Hello.scala']
-		},
-		{
 			'name': 'package',
 			'desc': 'Package name, ex: com.mycom.myapp',
 			'data_type': 'string',
@@ -66,7 +60,7 @@ class ScalaGenerator(IGenerator):
 	]
 
 	
-	def __init__(self, out_dir, name="Hello", version="0.0.1", sources=["Hello.scala"], main_class="Hello", package=None, plugins=[]):
+	def __init__(self, out_dir, name="Hello", version="0.0.1", main_class="Hello", package=None, plugins=[]):
 		super(ScalaGenerator, self).__init__(out_dir)
 		
 		self._build_file = "build.sbt"
@@ -84,12 +78,7 @@ class ScalaGenerator(IGenerator):
 			plugins = plugins.split(' ')
 		
 		self.plugin_names = plugins
-		
-		if isinstance(sources, (str, unicode)):
-			sources = sources.split(" ")
-		
-		self.sources = sources
-		
+
 		_template_build = [
 			'name := "$name"',
 			'version := "$version"',
@@ -237,7 +226,7 @@ Parameters:
 
 Examples:
 
-	$ progen -p Scala:sbt -o ./hello name=Hello version=0.0.1 sources="Hello.scala" main_class="Hello"
+	$ progen -p Scala:sbt -o ./hello name=Hello version=0.0.1 main_class="Hello"
 ''' % dict(parameters=parameters)
 		return usage_text
 	
@@ -251,12 +240,7 @@ Examples:
 		
 		
 	def test(self):
-		#if self.kind not in ['exe', 'lib']:
-		#	raise GeneratorException, "Invalid kind, only support: `cmd` and `pkg`."
 		
-		if isinstance(self.sources, (tuple, list)) == False:
-			raise GeneratorException, "Invalid sources type, should be tuple or list"
-	
 		if not self.scala_home:
 			raise GeneratorException, "Cannot get scala_home, please set it manually by exporting to SCALA_HOME environment"
 		
