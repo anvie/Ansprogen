@@ -30,24 +30,40 @@ class ScalaGenerator(IGenerator):
 	
 	name = "Scala"
 	source_ext = ".scala"
-	usage = '''
-Generate Scala project
-
-Parameters:
-
-	kind -- Project kind, currently support `exe` and `lib`.
+	parameters = [
+		{
+			'name': 'kind',
+			'data_type': 'string',
+			'desc': '''Project kind, currently support `exe` and `lib`.
 			`exe` for create executable jar target.
-			`lib` for create java library.
-	target_name -- Target output name.
-	sources -- scala sources, separated by whitespace.
-	main_class -- if project kind == `exe` then specify this one
-				for class entry point.
-	package -- Package name, ex: com.ansvia.myapp.
-
-Examples:
-
-	$ progen -p Scala -o ./hello kind=exe target_name=hello.jar sources="Hello.scala" main_class="Hello"
-'''
+			`lib` for create java library.''',
+			'default': 'exe'
+		},
+		{
+			'name': 'target_name',
+			'desc': 'Project name.',
+			'data_type': 'string',
+			'default': 'Hello'
+		},
+		{
+			'name': 'sources',
+			'desc': 'Scala sources, separated by whitespace.',
+			'data_type': 'list',
+			'default': ['Hello.scala']
+		},
+		{
+			'name': 'main_class',
+			'desc': 'if project kind == `exe` then specify this one for class entry point.',
+			'data_type': 'string',
+			'default': "Hello"
+		},
+		{
+			'name': 'package',
+			'desc': 'Package name, ex: com.mycom.myapp',
+			'data_type': 'string',
+			'default': None
+		}
+	]
 	
 	def __init__(self, out_dir, kind="exe", target_name="Hello.jar", sources=["Hello.scala"], main_class="Hello", package=None):
 		super(ScalaGenerator, self).__init__(out_dir)
@@ -273,7 +289,22 @@ object $main_class {
 
 		return True
 		
-	
+	@staticmethod
+	def usage():
+		parameters = IGenerator.get_help_parameters(ScalaGenerator)
+		
+		usage_text = '''
+Generate Scala project
+
+Parameters:
+
+	%(parameters)s
+
+Examples:
+
+	$ progen -p Scala -o ./hello kind=exe target_name=hello.jar sources="Hello.scala" main_class="Hello"
+''' % dict(parameters=parameters)
+		return usage_text
 
 	
 

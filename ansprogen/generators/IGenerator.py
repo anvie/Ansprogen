@@ -76,7 +76,7 @@ class IGenerator(object):
 		params = Cls.parameters
 		for p in params:
 			if p.has_key('default') and p['default']:
-				rv.append('%s -- {%s} %s, default %s' % (p['name'], p['data_type'], p['desc'], p['default']))
+				rv.append('%s -- {%s} %s, default %s.' % (p['name'], p['data_type'], p['desc'], p['default']))
 			else:
 				rv.append('%s -- {%s} %s' % (p['name'], p['data_type'], p['desc']))
 			
