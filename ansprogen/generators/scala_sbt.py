@@ -109,7 +109,6 @@ class ScalaGenerator(IGenerator):
 			return 1
 		
 		_template_build = sorted(_template_build, _cmp)
-		print _template_build
 		self._template_build = Template('\n\n'.join(_template_build))
 		
 		package = ""

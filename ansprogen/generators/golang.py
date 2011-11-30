@@ -30,21 +30,29 @@ class GolangGenerator(IGenerator):
 	
 	name = "Golang"
 	source_ext = ".go"
-	usage = '''
-Generate Golang project.
+	parameters = [
+		{
+			'name': 'kind',
+			'data_type': 'string',
+			'desc': '''Project kind, can be `cmd` or `pkg`.
+		`cmd` for create executable project,
+		`pkg` for create package / go lib.''',
+			'default': 'cmd'
+		},
+		{
+			'name': 'target_name',
+			'data_type': 'string',
+			'desc': 'Output target file name',
+			'default': 'hello'
+		},
+		{
+			'name': 'sources',
+			'data_type': 'list',
+			'desc': 'Golang sources, separated by whitespace.',
+			'default': ["hello.go"]
+		}
+	]
 
-Parameters:
-	kind -- Project kind, can be `cmd` or `pkg`.
-			`cmd` for create executable project,
-			`pkg` for create package / go lib.
-	target_name -- main target name.
-	sources -- golang sources, separated by whitespace.
-	
-Examples:
-	
-	$ progen -p Golang -o ./ kind=cmd target_name=hello sources="hello.go"
-	
-'''
 	
 	def __init__(self, out_dir, kind="cmd", target_name="hello", sources=["hello.go"]):
 		super(GolangGenerator, self).__init__(out_dir)
@@ -123,6 +131,26 @@ func main() {
 			raise GeneratorException, "Invalid sources type, should be tuple or list"
 
 		return True
+
+
+	@staticmethod
+	def usage():
+		parameters = IGenerator.get_help_parameters(GolangGenerator)
+		
+		usage_text = '''
+Generate Golang project.
+
+Parameters:
+	
+	%(parameters)s
+	
+Examples:
+	
+	$ progen -p Golang -o ./ kind=cmd target_name=hello sources="hello.go"
+	
+''' % dict(parameters=parameters)
+	
+		return usage_text
 		
 	
 
