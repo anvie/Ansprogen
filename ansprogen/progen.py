@@ -30,7 +30,8 @@ VERSION = "0.0.2"
 
 _generators = [
 	golang.GolangGenerator,
-	scala.ScalaGenerator
+	scala.ScalaGenerator,
+	scala_sbt.ScalaGenerator
 ]
 
 
@@ -40,11 +41,18 @@ def get_generator(name):
 			return g
 	return None
 
+def list_generators():
+	for g in _generators:
+		print "* " + g.name
+		print "  `help %s` to show %s's project spec details" % (g.name, g.name )
+		print ""
+
 parser = OptionParser()
 
-parser.add_option("-p", "--project", dest="project", help="Project for, currently support: Golang & Scala")
+parser.add_option("-p", "--project", dest="project", help="Project for. Show supported generators using `-t` parameter.")
 parser.add_option("-o", "--out-dir", dest="out_dir", help="Output directory")
 parser.add_option("-i", "--interactive", dest="interactive", action="store_true", help="Interactive mode")
+parser.add_option("-t", dest="list_generators", action="store_true", help="Show supported generators.")
 
 usage = '''
 To get usage details on every supported project,
@@ -65,14 +73,26 @@ def main():
 		if opt == "help":
 			gen = get_generator(proj)
 			if gen:
-				print gen.usage
+				print gen.usage()
 				return 0
 			else:
 				print "Unknown help for project `%s`" % proj
 				return 3
 	
+	if opts.list_generators:
+		print ""
+		print "Supported generators:\n"
+		list_generators()
+		return
+	
 	if not opts.project:
 		print "No project name, please specify it with `-p` or `--project`"
+		parser.print_help()
+		print usage
+		return 1
+
+	if not opts.out_dir:
+		print "No output dir, please specify it with `-o` or `--out-dir`"
 		parser.print_help()
 		print usage
 		return 1
@@ -91,6 +111,7 @@ def main():
 		print usage
 		return 2
 	
+
 	params = dict(map(lambda x: x.split("="), args))
 	params['out_dir'] = opts.out_dir
 	
@@ -99,10 +120,15 @@ def main():
 	if opts.interactive:
 		print "Creating %s project" % Generator.name
 		print "Interactive mode."
-		i_params = Generator.__init__.im_func.func_code.co_varnames[1:]
+		i_params = Generator.parameters
 		for p in i_params:
-			param = raw_input(" -> " + p + ": ")
-			params[p] = param
+			name = p['name']
+			if isinstance(p['default'], (str, unicode)):
+				default = p.has_key('default') and '[' + p['default'] + ']' or ''
+			else:
+				default = ''
+			param = raw_input(" -> " + name + ' ' + default + ' ' + ": ")
+			params[name] = param
 	
 	#print params
 	
@@ -115,6 +141,9 @@ def main():
 		gen.rollback()
 		return 4
 	
+	print "Output: `%s`" % opts.out_dir
+	print "Done."
+
 	return 0
 
 

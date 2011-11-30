@@ -70,9 +70,24 @@ class IGenerator(object):
 			return path
 		return path + self.source_ext
 	
-	@property
-	def build_file(self):
-		return self.__build_file
+	@staticmethod
+	def get_help_parameters(Cls):
+		rv = []
+		params = Cls.parameters
+		for p in params:
+			if p.has_key('default') and p['default']:
+				rv.append('%s -- {%s} %s, default %s' % (p['name'], p['data_type'], p['desc'], p['default']))
+			else:
+				rv.append('%s -- {%s} %s' % (p['name'], p['data_type'], p['desc']))
+			
+			if p.has_key('accept'):
+				rv.append("\tsupport: %s.\n" % ", ".join(p['accept']))
+			
+		return "\n\t".join(rv)
+	
+	@staticmethod
+	def usage():
+		raise GeneratorException, "Not implemented"
 	
 	def build_main_file(self):
 		raise GeneratorException, "Not implemented"
@@ -83,9 +98,10 @@ class IGenerator(object):
 		raise GeneratorException, "Not implemented"
 
 	def __repr__(self):
-		return str(self.__name)
+		return "<Generator[%s]>" % str(self.name)
 
 	def test(self):
 		raise GeneratorException, "Not implemented"
+
 
 
