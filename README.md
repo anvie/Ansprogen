@@ -91,6 +91,27 @@ Will show project spec details:
 		$ progen -p Scala -o ./hello kind=exe target_name=hello.jar sources="Hello.scala" main_class="Hello"
 
 
+Show all supported projects:
+
+	$ progen -t
+	
+	Ansprogen 0.0.3
+	
+	Supported generators:
+	
+	* Golang
+	  `help Golang` to show Golang's project spec details
+	
+	* Scala
+	  `help Scala` to show Scala's project spec details
+	
+	* Scala:sbt
+	  `help Scala:sbt` to show Scala:sbt's project spec details
+
+Create Scala project with sbt tools:
+
+	$ progen -p Scala:sbt -o ~/hello_sbt
+
 Installation
 -------------
 
