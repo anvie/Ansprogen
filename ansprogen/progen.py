@@ -26,7 +26,7 @@ import sys
 
 from generators import *
 
-VERSION = "0.0.3"
+VERSION = "0.0.3b"
 
 _generators = [
 	golang.GolangGenerator,

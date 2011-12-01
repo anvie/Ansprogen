@@ -17,13 +17,14 @@ except:
 
 setup(
     name = "ansprogen",
-    version = "0.0.3",
+    version = "0.0.3b",
     author = "Robin Syihab",
     author_email = "anvie_2194@yahoo.com",
     description = (desc),
     license = "MIT",
     keywords = "ansprogen project generator",
-    url = "https://github.com/anvie/Ansprogen",
+    url = "http://www.mindtalk.com/u/anvie",
+	download_url = "https://github.com/anvie/Ansprogen",
     packages=find_packages(),
 	package_data = {
 		'': ['README.md', '*.py']
