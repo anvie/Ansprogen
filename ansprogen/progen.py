@@ -123,6 +123,10 @@ def main():
 		i_params = Generator.parameters
 		for p in i_params:
 			name = p['name']
+			
+			if p.has_key('accept'):
+				print "   supported: " + ', '.join(p['accept'])
+			
 			if isinstance(p['default'], (str, unicode)):
 				default = p.has_key('default') and '[' + p['default'] + ']' or ''
 			else:

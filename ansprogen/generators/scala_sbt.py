@@ -55,12 +55,12 @@ class ScalaGenerator(IGenerator):
 			'desc': 'Plugins name list separated by whitespace.',
 			'data_type': 'list',
 			'default': [],
-			'accept': ['sbt-assembly', 'xsbt-proguard-plugin']
+			'accept': ['sbt-assembly', 'xsbt-proguard-plugin', 'sbteclipse']
 		}
 	]
 
 	
-	def __init__(self, out_dir, name="Hello", version="0.0.1", main_class="Hello", package=None, plugins=[]):
+	def __init__(self, out_dir, name="Hello", version="0.0.1", main_class=None, package=None, plugins=[]):
 		super(ScalaGenerator, self).__init__(out_dir)
 		
 		self._build_file = "build.sbt"
@@ -70,7 +70,14 @@ class ScalaGenerator(IGenerator):
 		
 		
 		self.target_name = name
-		self.main_class = main_class.title()
+		
+		if main_class:
+			self.main_class = main_class.title()
+		elif name:
+			self.main_class = name
+		else:
+			self.main_class = "Hello"
+		
 		self.package = package
 		self.version = version
 		
@@ -300,9 +307,9 @@ class Assembly(SbtPlugin):
 	
 	def generate(self):
 		self.ensure_plugins_sbt()
-		self.sbt_file.write('''addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.7.2")''')
+		self.sbt_file.write('''addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.7.2")\n''')
 		self.close()
-	
+
 
 class Proguard(SbtPlugin):
 	
@@ -345,11 +352,27 @@ object PluginDef extends Build {
 		self.close()
 		
 
+class Sbtclipse(SbtPlugin):
+	
+	name = "sbteclipse"
+	sbt_build_stuff = []
+	
+	def generate(self):
+		self.ensure_plugins_sbt()
+		self.sbt_file.write('''
+resolvers += Classpaths.typesafeResolver
+
+addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse" % "1.5.0")\n''')
+		self.close()
+	
+
+
 ## Register plugins
 
 _sbt_plugins = [
 	Assembly,
-	Proguard
+	Proguard,
+	Sbtclipse
 ]
 
 def _get_sbt_plugin(name):
