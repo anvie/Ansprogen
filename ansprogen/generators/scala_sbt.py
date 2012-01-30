@@ -52,7 +52,7 @@ class ScalaGenerator(IGenerator):
 		},
 		{
 			'name': 'plugins',
-			'desc': 'Plugins name list separated by whitespace.',
+			'desc': 'Plugins index list separated by whitespace. ex: 1 2',
 			'data_type': 'list',
 			'default': [],
 			'accept': ['sbt-assembly', 'xsbt-proguard-plugin', 'sbteclipse']
@@ -81,22 +81,21 @@ class ScalaGenerator(IGenerator):
 		self.package = package
 		self.version = version
 		
-		if ' ' in plugins:
-			plugins = plugins.split(' ')
-		
-		self.plugin_names = plugins
-
 		_template_build = [
 			'name := "$name"',
 			'version := "$version"',
 			'scalaVersion := "$scala_version"'
 		]
 		
-		if self.plugin_names:
-			for pn in self.plugin_names:
-				PClass = _get_sbt_plugin(pn)
+		
+		if ' ' in plugins:
+			plugins = map(lambda x:_get_sbt_plugin(int(x)), plugins.split(' '))
+			
+			for PClass in plugins:
 				p = PClass(self)
 				_template_build += p.sbt_build_stuff
+		
+		self.plugins = plugins
 		
 		## shorting, all import* place on top
 		def _cmp(a, b):
@@ -148,7 +147,8 @@ object $main_class {
 				'/usr/local/share/scala',
 				'/usr/lib/scala',
 				'/usr/local/lib/scala',
-				'/opt/lib/scala'
+				'/opt/lib/scala',
+				'/usr/share/lib'
 			]
 			
 			for dir in dirs:
@@ -189,10 +189,8 @@ object $main_class {
 		self.build_main_file()
 		
 		## Process plugins
-		for pn in self.plugin_names:
-			Pclass = _get_sbt_plugin(pn)
-			#from dbgp.client import brk; brk()
-			p = Pclass(self)
+		for PClass in self.plugins:
+			p = PClass(self)
 			p.generate()
 			p.close()
 		
@@ -375,8 +373,10 @@ _sbt_plugins = [
 	Sbtclipse
 ]
 
-def _get_sbt_plugin(name):
-	for p in _sbt_plugins:
-		if p.name == name:
-			return p
-	raise GeneratorException, "Unknown SbtPlugin name `%s`" % name
+def _get_sbt_plugin(i):
+	index = i - 1
+	if index > len(_sbt_plugins):
+		raise GeneratorException, "Unknown SbtPlugin index `%d`" % index
+	return _sbt_plugins[index]
+
+	

@@ -26,7 +26,7 @@ import sys
 
 from generators import *
 
-VERSION = "0.0.3b"
+VERSION = "0.0.4"
 
 _generators = [
 	golang.GolangGenerator,
@@ -124,13 +124,20 @@ def main():
 		for p in i_params:
 			name = p['name']
 			
+			if p.has_key('desc'):
+				print "   " + p['desc']
+				
 			if p.has_key('accept'):
-				print "   supported: " + ', '.join(p['accept'])
+				accept = p['accept']
+				for i, a in enumerate(accept):
+					accept[i] = "%d: %s" % ((i+1), a)
+				print "   supported: " + ', '.join(accept)
 			
 			if isinstance(p['default'], (str, unicode)):
 				default = p.has_key('default') and '[' + p['default'] + ']' or ''
 			else:
 				default = ''
+			
 			param = raw_input(" -> " + name + ' ' + default + ' ' + ": ")
 			params[name] = param
 	

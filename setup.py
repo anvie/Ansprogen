@@ -17,9 +17,9 @@ except:
 
 setup(
     name = "ansprogen",
-    version = "0.0.3b",
+    version = "0.0.4",
     author = "Robin Syihab",
-    author_email = "anvie_2194@yahoo.com",
+    author_email = "r[@]nosql.asia",
     description = (desc),
     license = "MIT",
     keywords = "ansprogen project generator",
