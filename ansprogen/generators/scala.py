@@ -196,7 +196,7 @@ object $main_class {
 
 	
 	def generate(self):
-		build_file = super(ScalaGenerator, self).generate()
+		#build_file = super(ScalaGenerator, self).generate()
 		
 		self.scala_home = os.environ.get('SCALA_HOME')
 		if self.scala_home:

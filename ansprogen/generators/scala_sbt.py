@@ -68,7 +68,6 @@ class ScalaGenerator(IGenerator):
 		if not self._build_file:
 			raise GeneratorException, "Unsupported kind `%s`" % kind
 		
-		
 		self.target_name = name
 		
 		if main_class:
@@ -86,7 +85,6 @@ class ScalaGenerator(IGenerator):
 			'version := "$version"',
 			'scalaVersion := "$scala_version"'
 		]
-		
 		
 		if ' ' in plugins:
 			plugins = map(lambda x:_get_sbt_plugin(int(x)), plugins.split(' '))
@@ -317,7 +315,7 @@ class Proguard(SbtPlugin):
 	def sbt_build_stuff(self):
 		rv = [
 			'seq(ProguardPlugin.proguardSettings :_*)',
-			Template('proguardOptions += keepMain("$main_class")').substitute(main_class=self.gen.main_class)
+			Template('proguardOptions += keepMain("$package.$main_class")').substitute(package = self.gen.package, main_class=self.gen.main_class)
 		]
 		return rv
 	

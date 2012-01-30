@@ -17,7 +17,7 @@ except:
 
 setup(
     name = "ansprogen",
-    version = "0.0.4",
+    version = "0.0.5",
     author = "Robin Syihab",
     author_email = "r[@]nosql.asia",
     description = (desc),

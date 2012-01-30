@@ -134,11 +134,15 @@ def main():
 				print "   supported: " + ', '.join(accept)
 			
 			if isinstance(p['default'], (str, unicode)):
-				default = p.has_key('default') and '[' + p['default'] + ']' or ''
+				default = p.has_key('default') and p['default'] or ''
 			else:
 				default = ''
 			
-			param = raw_input(" -> " + name + ' ' + default + ' ' + ": ")
+			param = raw_input(" -> " + name + ' [' + default + '] ' + ": ")
+			
+			if len(param.strip()) == 0:
+				param = default
+			
 			params[name] = param
 	
 	#print params
