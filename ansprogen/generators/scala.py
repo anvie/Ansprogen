@@ -228,7 +228,7 @@ object $main_class {
 		if self.package:
 			main_class_with_package = self.package + "." + self.main_class
 
-		f = open(build_file, "w")
+		f = open(self._build_file, "w")
 		data = {
 			'target_name': self.target_name,
 			'package': self.package and self.package or '',
