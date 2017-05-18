@@ -41,17 +41,17 @@ class IGenerator(object):
 			if os.path.isfile(self.out_dir) != True:
 				os.makedirs(self.out_dir)
 			else:
-				raise GeneratorException("Already exists as file `%s`" % self.out_dir)
+				raise GeneratorException, "Already exists as file `%s`" % self.out_dir
 		
 		build_file = os.path.join(self._normalize_path(self.out_dir), self._build_file)
 		
 		if os.path.exists(build_file):
-			print("Build file already exists `%s`" % build_file, end=' ')
-			ui = input("Remove? [y/n] ")
+			print "Build file already exists `%s`" % build_file,
+			ui = raw_input("Remove? [y/n] ")
 			if ui == "y":
 				os.unlink(build_file)
 				if os.path.exists(build_file):
-					raise GeneratorException("Build file already exists `%s` (cannot remove)" % build_file)
+					raise GeneratorException, "Build file already exists `%s` (cannot remove)" % build_file
 			else:
 				return None
 		
@@ -75,33 +75,33 @@ class IGenerator(object):
 		rv = []
 		params = Cls.parameters
 		for p in params:
-			if 'default' in p and p['default']:
+			if p.has_key('default') and p['default']:
 				rv.append('%s -- {%s} %s, default %s.' % (p['name'], p['data_type'], p['desc'], p['default']))
 			else:
 				rv.append('%s -- {%s} %s' % (p['name'], p['data_type'], p['desc']))
 			
-			if 'accept' in p:
+			if p.has_key('accept'):
 				rv.append("\tsupport: %s.\n" % ", ".join(p['accept']))
 			
 		return "\n\t".join(rv)
 	
 	@staticmethod
 	def usage():
-		raise GeneratorException("Not implemented")
+		raise GeneratorException, "Not implemented"
 	
 	def build_main_file(self):
-		raise GeneratorException("Not implemented")
+		raise GeneratorException, "Not implemented"
 
 	def rollback(self):
 		"""This called when gerenator fail.
 		"""
-		raise GeneratorException("Not implemented")
+		raise GeneratorException, "Not implemented"
 
 	def __repr__(self):
 		return "<Generator[%s]>" % str(self.name)
 
 	def test(self):
-		raise GeneratorException("Not implemented")
+		raise GeneratorException, "Not implemented"
 
 
 

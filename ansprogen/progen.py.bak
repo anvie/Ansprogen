@@ -24,7 +24,7 @@ from optparse import OptionParser
 
 import sys
 
-from .generators import *
+from generators import *
 
 VERSION = "0.0.4"
 
@@ -43,9 +43,9 @@ def get_generator(name):
 
 def list_generators():
 	for g in _generators:
-		print("* " + g.name)
-		print("  `help %s` to show %s's project spec details" % (g.name, g.name ))
-		print("")
+		print "* " + g.name
+		print "  `help %s` to show %s's project spec details" % (g.name, g.name )
+		print ""
 
 parser = OptionParser()
 
@@ -64,7 +64,7 @@ execute `help` followed by project name, example:
 
 def main():
 	
-	print("Ansprogen " + VERSION)
+	print "Ansprogen " + VERSION
 	
 	opts, args = parser.parse_args()
 	
@@ -73,72 +73,72 @@ def main():
 		if opt == "help":
 			gen = get_generator(proj)
 			if gen:
-				print(gen.usage())
+				print gen.usage()
 				return 0
 			else:
-				print("Unknown help for project `%s`" % proj)
+				print "Unknown help for project `%s`" % proj
 				return 3
 	
 	if opts.list_generators:
-		print("")
-		print("Supported generators:\n")
+		print ""
+		print "Supported generators:\n"
 		list_generators()
 		return
 	
 	if not opts.project:
-		print("No project name, please specify it with `-p` or `--project`")
+		print "No project name, please specify it with `-p` or `--project`"
 		parser.print_help()
-		print(usage)
+		print usage
 		return 1
 
 	if not opts.out_dir:
-		print("No output dir, please specify it with `-o` or `--out-dir`")
+		print "No output dir, please specify it with `-o` or `--out-dir`"
 		parser.print_help()
-		print(usage)
+		print usage
 		return 1
 
 	if not opts.interactive and not opts.out_dir:
-		print("No out dir, please specify it with `-o` or `--out-dir`")
+		print "No out dir, please specify it with `-o` or `--out-dir`"
 		parser.print_help()
-		print(usage)
+		print usage
 		return 1
 	
 	Generator = get_generator(opts.project)
 	
 	if not Generator:
-		print("Unknown project `%s`" % opts.project)
+		print "Unknown project `%s`" % opts.project
 		parser.print_usage()
-		print(usage)
+		print usage
 		return 2
 	
 
-	params = dict([x.split("=") for x in args])
+	params = dict(map(lambda x: x.split("="), args))
 	params['out_dir'] = opts.out_dir
 	
 	#from dbgp.client import brk; brk()
 	
 	if opts.interactive:
-		print("Creating %s project" % Generator.name)
-		print("Interactive mode.")
+		print "Creating %s project" % Generator.name
+		print "Interactive mode."
 		i_params = Generator.parameters
 		for p in i_params:
 			name = p['name']
 			
-			if 'desc' in p:
-				print("   " + p['desc'])
+			if p.has_key('desc'):
+				print "   " + p['desc']
 				
-			if 'accept' in p:
+			if p.has_key('accept'):
 				accept = p['accept']
 				for i, a in enumerate(accept):
 					accept[i] = "%d: %s" % ((i+1), a)
-				print("   supported: " + ', '.join(accept))
+				print "   supported: " + ', '.join(accept)
 			
-			if isinstance(p['default'], str):
-				default = 'default' in p and p['default'] or ''
+			if isinstance(p['default'], (str, unicode)):
+				default = p.has_key('default') and p['default'] or ''
 			else:
 				default = ''
 			
-			param = input(" -> " + name + ' [' + default + '] ' + ": ")
+			param = raw_input(" -> " + name + ' [' + default + '] ' + ": ")
 			
 			if len(param.strip()) == 0:
 				param = default
@@ -156,8 +156,8 @@ def main():
 		gen.rollback()
 		return 4
 	
-	print("Output: `%s`" % opts.out_dir)
-	print("Done.")
+	print "Output: `%s`" % opts.out_dir
+	print "Done."
 
 	return 0
 

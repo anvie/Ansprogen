@@ -23,7 +23,7 @@ THE SOFTWARE.
 import os
 from string import Template
 
-from .IGenerator import IGenerator, GeneratorException
+from IGenerator import IGenerator, GeneratorException
 
 
 class ScalaGenerator(IGenerator):	
@@ -72,17 +72,17 @@ class ScalaGenerator(IGenerator):
 			self._build_file = "build.xml"
 		
 		if not self._build_file:
-			raise GeneratorException("Unsupported kind `%s`" % kind)
+			raise GeneratorException, "Unsupported kind `%s`" % kind
 		
 		if kind not in ['exe', 'lib']:
-			raise GeneratorException("Invalid kind, only support: `exe` and `lib`.") 
+			raise GeneratorException, "Invalid kind, only support: `exe` and `lib`." 
 		
 		self.kind = kind
 		self.target_name = target_name
 		self.main_class = main_class.title()
 		self.package = package
 		
-		if isinstance(sources, str):
+		if isinstance(sources, (str, unicode)):
 			sources = sources.split(" ")
 		
 		self.sources = sources
@@ -201,10 +201,10 @@ object $main_class {
 		self.scala_home = os.environ.get('SCALA_HOME')
 		if self.scala_home:
 			if os.path.exists(self.scala_home) == False:
-				raise GeneratorException("Scala home not exists `%s`" % self.scala_home)
+				raise GeneratorException, "Scala home not exists `%s`" % self.scala_home
 			
 			if os.path.isdir(self.scala_home) == False:
-				raise GeneratorException("Scala home is not dir `%s`" % self.scala_home)
+				raise GeneratorException, "Scala home is not dir `%s`" % self.scala_home
 		
 		if not self.scala_home:
 			## get scala_home
@@ -273,19 +273,19 @@ object $main_class {
 		
 	def test(self):
 		if self.kind not in ['exe', 'lib']:
-			raise GeneratorException("Invalid kind, only support: `cmd` and `pkg`.")
+			raise GeneratorException, "Invalid kind, only support: `cmd` and `pkg`."
 		
 		if isinstance(self.sources, (tuple, list)) == False:
-			raise GeneratorException("Invalid sources type, should be tuple or list")
+			raise GeneratorException, "Invalid sources type, should be tuple or list"
 	
 		if not self.scala_home:
-			raise GeneratorException("Cannot get scala_home, please set it manually by exporting to SCALA_HOME environment")
+			raise GeneratorException, "Cannot get scala_home, please set it manually by exporting to SCALA_HOME environment"
 		
 		if os.path.exists(self.scala_home) == False:
-			raise GeneratorException("Scala home not exists `%s`" % self.scala_home)
+			raise GeneratorException, "Scala home not exists `%s`" % self.scala_home
 		
 		if self.kind == "exe" and not self.main_class:
-			raise GeneratorException("Scala kind `exe` should have main_class, please set it with main_class parameter.")
+			raise GeneratorException, "Scala kind `exe` should have main_class, please set it with main_class parameter."
 
 		return True
 		

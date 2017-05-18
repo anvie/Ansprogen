@@ -24,7 +24,7 @@ import os
 import re
 from string import Template
 
-from .IGenerator import IGenerator, GeneratorException
+from IGenerator import IGenerator, GeneratorException
 
 
 class ScalaGenerator(IGenerator):	
@@ -66,7 +66,7 @@ class ScalaGenerator(IGenerator):
 		self._build_file = "build.sbt"
 		
 		if not self._build_file:
-			raise GeneratorException("Unsupported kind `%s`" % kind)
+			raise GeneratorException, "Unsupported kind `%s`" % kind
 		
 		self.target_name = name
 		
@@ -87,7 +87,7 @@ class ScalaGenerator(IGenerator):
 		]
 		
 		if ' ' in plugins:
-			plugins = [_get_sbt_plugin(int(x)) for x in plugins.split(' ')]
+			plugins = map(lambda x:_get_sbt_plugin(int(x)), plugins.split(' '))
 			
 			for PClass in plugins:
 				p = PClass(self)
@@ -127,16 +127,16 @@ object $main_class {
 		build_file = super(ScalaGenerator, self).generate()
 		
 		if not build_file:
-			print("Aborted.")
+			print "Aborted."
 			return False
 		
 		self.scala_home = os.environ.get('SCALA_HOME')
 		if self.scala_home:
 			if os.path.exists(self.scala_home) == False:
-				raise GeneratorException("Scala home not exists `%s`" % self.scala_home)
+				raise GeneratorException, "Scala home not exists `%s`" % self.scala_home
 			
 			if os.path.isdir(self.scala_home) == False:
-				raise GeneratorException("Scala home is not dir `%s`" % self.scala_home)
+				raise GeneratorException, "Scala home is not dir `%s`" % self.scala_home
 		
 		if not self.scala_home:
 			## get scala_home
@@ -245,16 +245,16 @@ Examples:
 	def test(self):
 		
 		if not self.scala_home:
-			raise GeneratorException("Cannot get scala_home, please set it manually by exporting to SCALA_HOME environment")
+			raise GeneratorException, "Cannot get scala_home, please set it manually by exporting to SCALA_HOME environment"
 		
 		if os.path.exists(self.scala_home) == False:
-			raise GeneratorException("Scala home not exists `%s`" % self.scala_home)
+			raise GeneratorException, "Scala home not exists `%s`" % self.scala_home
 		
 		#if self.kind == "exe" and not self.main_class:
 		#	raise GeneratorException, "Scala kind `exe` should have main_class, please set it with main_class parameter."
 
 		if not self.scala_version:
-			raise GeneratorException("Cannot find installed scala")
+			raise GeneratorException, "Cannot find installed scala"
 
 		return True
 		
@@ -262,7 +262,7 @@ Examples:
 class SbtPlugin(object):
 	def __init__(self, generator):
 		if not isinstance(generator, IGenerator):
-			raise GeneratorException("Invalid ganerator type passed to SbtPlugin __init__")
+			raise GeneratorException, "Invalid ganerator type passed to SbtPlugin __init__"
 		self.gen = generator
 		self.sbt_file = None
 		
@@ -272,7 +272,7 @@ class SbtPlugin(object):
 			self.sbt_file = None
 	
 	def generate(self):
-		raise GeneratorException("Plugin.generate not implemented")
+		raise GeneratorException, "Plugin.generate not implemented"
 	
 	def ensure_plugins_sbt(self):
 		p = self.gen._normalize_path(self.gen.out_dir) + "/project"
@@ -289,7 +289,7 @@ class SbtPlugin(object):
 			self.sbt_file = open(p, "a")
 		
 		if not self.sbt_file:
-			raise GeneratorException("Cannot create plugins.sbt file")
+			raise GeneratorException, "Cannot create plugins.sbt file"
 			
 			
 
@@ -374,7 +374,7 @@ _sbt_plugins = [
 def _get_sbt_plugin(i):
 	index = i - 1
 	if index > len(_sbt_plugins):
-		raise GeneratorException("Unknown SbtPlugin index `%d`" % index)
+		raise GeneratorException, "Unknown SbtPlugin index `%d`" % index
 	return _sbt_plugins[index]
 
 	
