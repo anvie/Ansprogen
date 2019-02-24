@@ -23,7 +23,7 @@ THE SOFTWARE.
 import os
 from string import Template
 
-from IGenerator import IGenerator, GeneratorException
+from .IGenerator import IGenerator, GeneratorException
 
 
 class GolangGenerator(IGenerator):	
@@ -59,12 +59,12 @@ class GolangGenerator(IGenerator):
 		self._build_file = "Makefile"
 		
 		if kind not in ['cmd', 'pkg']:
-			raise GeneratorException, "Invalid kind, only support: `cmd` and `pkg`." 
+			raise GeneratorException("Invalid kind, only support: `cmd` and `pkg`.") 
 		
 		self.kind = kind
 		self.target_name = target_name
 		
-		if isinstance(sources, (unicode, str)):
+		if isinstance(sources, str):
 			sources = sources.split(" ")
 		
 		self.sources = sources
@@ -125,10 +125,10 @@ func main() {
 		
 	def test(self):
 		if self.kind not in ['cmd', 'pkg']:
-			raise GeneratorException, "Invalid kind, only support: `cmd` and `pkg`."
+			raise GeneratorException("Invalid kind, only support: `cmd` and `pkg`.")
 		
 		if isinstance(self.sources, (tuple, list)) == False:
-			raise GeneratorException, "Invalid sources type, should be tuple or list"
+			raise GeneratorException("Invalid sources type, should be tuple or list")
 
 		return True
 
